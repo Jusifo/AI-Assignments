@@ -22,5 +22,7 @@ csp = CSP(
 
 print(f"Result: {csp.backtracking_search()}")
 
+print(f"\nBacktracking Calls: {csp.backtracking_calls}\n")
+
 # Example output after implementing csp.backtracking_search():
 # {'WA': 'red', 'NT': 'green', 'Q': 'red', 'NSW': 'green', 'V': 'red', 'SA': 'blue', 'T': 'red'}

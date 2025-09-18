@@ -59,6 +59,10 @@ csp = CSP(
 
 print_solution(csp.backtracking_search())
 
+print(f"Result: {csp.backtracking_search()}")
+
+print(f"\nBacktracking Calls: {csp.backtracking_calls}\n")
+
 # Expected output after implementing csp.ac_3() and csp.backtracking_search():
 # True
 # 7 8 4 | 9 3 2 | 1 5 6
