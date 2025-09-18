@@ -24,9 +24,6 @@ class CSP:
         self.variables = variables
         self.domains = domains
 
-        #TODO A domain Cache for the last results produced by AC-3
-        self.ac3_domains = domains.copy()
-
 
         #TODO Added a neighbors dictionary in order to quickly check the neighbors of a node
         self.neighbors = {var: set() for var in self.variables}
@@ -69,7 +66,7 @@ class CSP:
         for value in list(self.domains[X1]):
             if not any(self.binary_check(X1, value, X2, value2) for value2 in self
                     .domains[X2]):
-                 self.ac3_domains[X1].remove(value)
+                 self.domains[X1].remove(value)
                  return True
 
             # for d_value in self.domains[X2]:
@@ -116,19 +113,28 @@ class CSP:
             A solution if any exists, otherwise None
         """
 
+        print(self.domains)
+        #Running AC-3 once
+        #if self.ac_3():
+        #    print(f"After Running AC-3 Once: \n {self.domains}")
+        #else:
+        #    print("AC-3 could not find improvements")
 
         def backtrack(assignment: dict[str, Any]):
 
             self.backtracking_calls += 1
+            if self.backtracking_calls % 1000 == 0:
+                print(f"Backtracking Call: {self.backtracking_calls}\n\n\n")
+                print_intermediate(assignment)
+                print("\n")
 
             #Pre assigning values with a domain consisting of only one element
-            for key in self.domains.keys():
-                if len(self.domains[key]) == 1:
-                    assignment[key] = next(iter(self.domains[key]))
+            # if self.backtracking_calls == 1:
+            #     for key in self.domains.keys():
+            #         if len(self.domains[key]) == 1:
+            #             assignment[key] = next(iter(self.domains[key]))
 
-            #Running AC-3 once
-            #if self.ac_3():
-            #    self.domains = self.ac3_domains.copy()
+
 
             # Underlying construct from AIMA 4th Ed., Global Edition
             if self.select_unassigned_variable(self.binary_constraints, assignment) == None:
@@ -138,7 +144,7 @@ class CSP:
                 domain_snapshot = self.domains.copy()
                 if self.value_consistency_check(assignment, var, value):
                     assignment[var] = value
-                    print(f"Variable: {var} -> Value: {value}")
+                    #print(f"Variable: {var} -> Value: {value}")
                     #if self.ac_3():
                     #      self.domains = self.ac3_domains.copy()
                     result = backtrack(assignment)
@@ -146,7 +152,7 @@ class CSP:
                         return result
                     self.domains = domain_snapshot.copy()
                     assignment.pop(var)
-                    print(f"\n Unassigned var: {var} Value: {value}\n")
+                    #print(f"\n Unassigned var: {var} Value: {value}\n")
 
             return None
         return backtrack({})
@@ -198,3 +204,22 @@ def alldiff(variables: list[str]) -> list[tuple[str, str]]:
     """
     return [(variables[i], variables[j]) for i in range(len(variables) - 1) for j in range(i + 1, len(variables))]
 
+# Print Intermediate to know what the Sudoku looks like inbetween
+# !! Hardcoded for width value
+def print_intermediate(solution):
+    """
+    Convert the representation of a Sudoku solution, as returned from
+    the method CSP.backtracking_search(), into a Sudoku board.
+    """
+    for row in range(9):
+        for col in range(9):
+            val = solution.get(f'X{row+1}{col+1}', 0)
+            if val == 0:
+                print(f"\033[91m{val}\033[0m", end=" ")
+            else:
+                print(val, end=" ")
+            if col == 2 or col == 5:
+                print('|', end=" ")
+        print("")
+        if row == 2 or row == 5:
+            print('------+-------+------')

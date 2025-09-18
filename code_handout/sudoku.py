@@ -59,7 +59,7 @@ csp = CSP(
 
 print_solution(csp.backtracking_search())
 
-print(f"Result: {csp.backtracking_search()}")
+#print(f"Result: {csp.backtracking_search()}")
 
 print(f"\nBacktracking Calls: {csp.backtracking_calls}\n")
 
