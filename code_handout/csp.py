@@ -39,6 +39,10 @@ class CSP:
         #  'WA': {'NT', 'Q', 'NSW', 'V', 'SA', 'T'},
         #  ...}
 
+        """
+        Adding Tracking Variables
+        """
+        self.backtracking_calls = 0
 
         # Binary constraints as a dictionary mapping variable pairs to a set of value pairs.
         #
@@ -114,6 +118,8 @@ class CSP:
 
 
         def backtrack(assignment: dict[str, Any]):
+
+            self.backtracking_calls += 1
 
             #Pre assigning values with a domain consisting of only one element
             for key in self.domains.keys():
